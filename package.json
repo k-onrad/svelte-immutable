@@ -1,0 +1,9 @@
+{
+  "name": "svelte-immutable",
+  "version": "0.0.1",
+  "description": "An immutable store for svelte, using svelte/store",
+  "main": "dist/svelte-immutable.js",
+  "repository": "git@github.com:k-onrad/svelte-immutable-store.git",
+  "author": "Gustavo Konrad <g.konrad@outlook.com>",
+  "license": "MIT"
+}
