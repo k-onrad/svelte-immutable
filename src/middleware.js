@@ -8,9 +8,9 @@ export default function apply(...middlewares) {
     }
 
     const chain = middlewares
-			.map((middleware) => middleware(state))
+      .map((middleware) => middleware(state))
       .reduce(
-        (next, middleware) => middleware(next, args),
+        (next, middleware) => middleware(next),
         final(state, args)
       )
 

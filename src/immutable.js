@@ -12,20 +12,18 @@ export default function immutable(state = {}, middleware) {
   // All changes are triggered through dispatch
   // dispatch is: (action, ...args) => action(state, ...args)
   // actions are: (state, ...args) => (state)
-  // middlewares are: (state) => (next, args) => ... => (state)
+  // middlewares are: (state) => (next) => (action) => (state)
   const dispatch = (action, ...args) => {
-    update(state => {
-      const old = state
+    update((previous) => {
+      const current = typeof middleware === 'function' ?
+        middleware(previous, action, args) :
+        action(previous, ...args)
 
-      state = typeof middleware === "function" ?
-        middleware(state, action, args) :
-        action(state, ...args)
+      history.push({ current, previous, diff: diff(current, previous), action })
 
-      history.push({ new: state, old, diff: diff(state, old), action })
-
-      return state
+      return current
     })
   }
 
-  return [{ subscribe }, dispatch, history, middleware]
+  return [{ subscribe }, dispatch, history]
 }
