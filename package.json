@@ -8,5 +8,8 @@
   "license": "MIT",
   "devDependencies": {
     "eslint": "^7.0.0"
+  },
+  "dependencies": {
+    "svelte": "^3.22.3"
   }
 }
