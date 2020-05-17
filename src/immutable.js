@@ -17,14 +17,12 @@ export default function immutable(state = {}, middleware) {
     update(state => {
       const old = state
 
-      if (typeof middleware === "function") {
-        state = middleware(state, action, args)
-        history.push({ new: state, old, diff: diff(state, old), action, middleware })
-        return state
-      }
+      state = typeof middleware === "function" ?
+        middleware(state, action, args) :
+        action(state, ...args)
 
-      state = action(state, ...args)
       history.push({ new: state, old, diff: diff(state, old), action })
+
       return state
     })
   }
