@@ -5,5 +5,8 @@
   "main": "dist/svelte-immutable.js",
   "repository": "git@github.com:k-onrad/svelte-immutable-store.git",
   "author": "Gustavo Konrad <g.konrad@outlook.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.0.0"
+  }
 }
