@@ -2,7 +2,8 @@ const key_prefix = 'persist:'
 
 function _() {}
 
-function mapStateToStorage(state, config) {
+function mapStateToStorage(get, config) {
+  const state = get()
   return new Promise((resolve, reject) => {
     config.storage.setItem(
       key_prefix + config.key,
@@ -12,7 +13,8 @@ function mapStateToStorage(state, config) {
   })
 }
 
-function mapStorageToState(state, config, cb = _) {
+function mapStorageToState(get, config, cb = _) {
+  const state = get()
   config.storage.getItem(key_prefix + config.key, (err, value) => {
     let _state = {}
     if (err) {
@@ -45,8 +47,9 @@ class MemoryStorage {
   }
 }
 
-const persist = (config = { key: '[rc]', storage: new MemoryStorage() }, cb = _) => (state) => {
-  mapStorageToState({}, config, (err, state) => {
+const persist = (config = { key: '[rc]', storage: new MemoryStorage() }, cb = _) => (get) => {
+  mapStorageToState({}, config, (err, get) => {
+    const state = get()
     if (err) {
       config.storage.removeItem(key_prefix + config.key, _err => {
         cb(_err, state)
@@ -61,10 +64,10 @@ const persist = (config = { key: '[rc]', storage: new MemoryStorage() }, cb = _)
     const r = next(action)
     if (r && typeof r.then === 'function') {
       return next(action).then(d => {
-        return mapStateToStorage(state, config).then(() => Promise.resolve(d))
+        return mapStateToStorage(get, config).then(() => Promise.resolve(d))
       })
     } else {
-      return mapStateToStorage(state, config).then(() => Promise.resolve(r))
+      return mapStateToStorage(get, config).then(() => Promise.resolve(r))
     }
   }
 }

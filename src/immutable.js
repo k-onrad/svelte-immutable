@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store'
-import diff from './differ.js'
 
 // use immutable to initialize a single store for a given part of the app (Single Source of Truth)
 // update the store, creating subtrees if needed
@@ -7,23 +6,28 @@ import diff from './differ.js'
 export default function immutable(state = {}, middleware) {
   const { subscribe, update } = writable(state)
 
-  const history = []
+  const get = () => {
+    let snapshot
+    subscribe((state) => snapshot = state)()
+    return snapshot
+  }
+
+  const set = (payload) => {
+    update((state) => ({
+      ...state,
+      ...(typeof payload === 'function' ? payload(state) : payload)
+    }))
+  }
 
   // All changes are triggered through dispatch
   // dispatch is: (action, ...args) => action(state, ...args)
   // actions are: (state, ...args) => (state)
   // middlewares are: (state) => (next) => (action) => (state)
-  const dispatch = (action, ...args) => {
-    update((previous) => {
-      const current = typeof middleware === 'function' ?
-        middleware(previous, action, args) :
-        action(previous, ...args)
-
-      history.push({ current, previous, diff: diff(current, previous), action })
-
-      return current
-    })
+  const dispatch = (action, ...args) => {	
+    typeof middleware === 'function' 
+      ?	middleware(get, set, action, args) 
+      : set(action(state, ...args))
   }
 
-  return [{ subscribe }, dispatch, history]
+  return [{ subscribe, get }, dispatch]
 }
