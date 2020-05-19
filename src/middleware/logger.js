@@ -8,8 +8,11 @@ const logger = () => (get) => {
   return (next) => (action) => {
     const previous = get()
     const r = next(action)
-    prinf(previous, action.name, r)
-    log.push({ current: r, previous, action, diff: diff(r, previous) })
+    const current = get()
+
+    prinf(previous, action.name, current)
+    log.push({ current, previous, action, diff: diff(current, previous) })
+
     return r
   }
 }

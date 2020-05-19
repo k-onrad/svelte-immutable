@@ -12,22 +12,18 @@ export default function immutable(state = {}, middleware) {
     return snapshot
   }
 
-  const set = (payload) => {
-    update((state) => ({
-      ...state,
-      ...(typeof payload === 'function' ? payload(state) : payload)
-    }))
-  }
+  const set = (payload) => update((state) => ({
+    ...state,
+    ...(typeof payload === 'function' ? payload(state) : payload)
+  }))
 
   // All changes are triggered through dispatch
   // dispatch is: (action, ...args) => action(state, ...args)
   // actions are: (state, ...args) => (state)
   // middlewares are: (state) => (next) => (action) => (state)
-  const dispatch = (action, ...args) => {	
-    typeof middleware === 'function' 
-      ?	middleware(get, set, action, args) 
-      : set(action(state, ...args))
-  }
+  const dispatch = (action, ...args) => typeof middleware === 'function' 
+    ?	middleware(get, set, action, args) 
+    : set(action(get(), ...args))
 
   return [{ subscribe, get }, dispatch]
 }
