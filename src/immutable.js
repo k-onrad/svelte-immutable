@@ -25,5 +25,5 @@ export default function immutable(state = {}, middleware) {
     ?	middleware(get, set, action, args) 
     : set(action(get(), ...args))
 
-  return [{ subscribe, get }, dispatch]
+  return [{ subscribe }, dispatch]
 }

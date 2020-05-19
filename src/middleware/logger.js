@@ -4,7 +4,8 @@ export const log = []
 
 // (config) => (state) => (middleware)
 const logger = () => (get) => {
-  // return an middleware
+
+  // return middleware
   return (next) => (action) => {
     const previous = get()
     const r = next(action)
@@ -15,6 +16,7 @@ const logger = () => (get) => {
 
     return r
   }
+
 }
 
 const prinf = (previous, action, current) => {

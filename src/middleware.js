@@ -1,4 +1,4 @@
-const final = (get, set, args) => (action) => set(action(get(), ...args))
+const last = (get, set, args) => (action) => set(action(get(), ...args))
 
 export default function apply(...middlewares) {
   middlewares.reverse()
@@ -11,7 +11,7 @@ export default function apply(...middlewares) {
       .map((middleware) => middleware(get, set))
       .reduce(
         (next, middleware) => middleware(next),
-        final(get, set, args)
+        last(get, set, args)
       )
 
     return chain(action)
